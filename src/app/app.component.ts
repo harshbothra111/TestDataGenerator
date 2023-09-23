@@ -20,9 +20,9 @@ export class AppComponent {
   @ViewChild('dataForm') form: NgForm;
   submitted: boolean;
   noOfRows = 1;
-  data:any = [];
+  data: any = [];
 
-  constructor(private http: HttpClient,private spinner: NgxSpinnerService) {
+  constructor(private http: HttpClient, private spinner: NgxSpinnerService) {
     this.http.get("assets/data/column-types.json").subscribe({
       next: (response) => {
         this.categories = response;
@@ -60,17 +60,23 @@ export class AppComponent {
     this.submitted = true;
     if (this.form.form.valid) {
       this.spinner.show();
-      this.data = [];
-      for (let i = 0; i < this.noOfRows; i++) {
-        let data:any = {};
-        this.columnDetails.forEach((column:any) => {
-          data.name = column.name;
-          data.value = faker.company.name();
-        });
-        this.data.push(data);
-      }
-      this.downloadFile();
-      this.spinner.hide();
+      setTimeout(() => {
+        this.prepareData();
+        this.downloadFile();
+        this.spinner.hide();
+      }, 2000);
+    }
+  }
+
+  prepareData() {
+    this.data = [];
+    for (let i = 0; i < this.noOfRows; i++) {
+      let data: any = {};
+      this.columnDetails.forEach((column: any) => {
+        data.name = column.name;
+        data.value = faker.company.name();
+      });
+      this.data.push(data);
     }
   }
 
@@ -98,7 +104,7 @@ export class AppComponent {
   }
 
   convertToCSV() {
-    let headerList = this.columnDetails.map((x:any) => x.name);
+    let headerList = this.columnDetails.map((x: any) => x.name);
     let array = this.data;
     let str = '';
     let row = '';
@@ -111,7 +117,7 @@ export class AppComponent {
     for (let i = 0; i < array.length; i++) {
       let line = '';
       for (let index in headerList) {
-        line += array[i]["value"].replace(/,/g,'') + ',';
+        line += array[i]["value"].replace(/,/g, '') + ',';
       }
       line = line.slice(0, -1);
       str += line + '\r\n';
