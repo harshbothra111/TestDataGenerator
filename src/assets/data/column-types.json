@@ -1,0 +1,70 @@
+[
+    {
+        "name": "Commerce",
+        "categories": [
+            {
+                "name": "department"
+            },
+            {
+                "name": "isbn"
+            },
+            {
+                "name": "price"
+            },
+            {
+                "name": "product"
+            },
+            {
+                "name": "productAdjective"
+            },
+            {
+                "name": "productDescription"
+            },
+            {
+                "name": "productMaterial"
+            },
+            {
+                "name": "productName"
+            }
+        ]
+    },
+    {
+        "name": "Company",
+        "categories":[
+            {
+                "name":"name"
+            }
+        ]
+    },
+    {
+        "name": "Datatype",
+        "categories":[
+            {
+                "name":"boolean"
+            }
+        ]
+    },
+    {
+        "name": "Number",
+        "categories": [
+            {
+                "name": "bigInt"
+            },
+            {
+                "name": "binary"
+            },
+            {
+                "name": "float"
+            },
+            {
+                "name": "hex"
+            },
+            {
+                "name": "int"
+            },
+            {
+                "name": "octal"
+            }
+        ]
+    }
+]
