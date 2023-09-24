@@ -1,9 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
-
-import { faker } from '@faker-js/faker';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { ServiceFacade } from './core/service.facade';
 
 @Component({
   selector: 'app-root',
@@ -12,7 +11,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 })
 export class AppComponent {
   title = 'Test Data Generator';
-  noOfColumns = 0;
+  noOfColumns = 1;
   isCreated = false;
   columnDetails: any = [];
   categories: any = [];
@@ -21,8 +20,10 @@ export class AppComponent {
   submitted: boolean;
   noOfRows = 1;
   data: any = [];
+  currentRow: number = 0;
+  subCategories:any = [];
 
-  constructor(private http: HttpClient, private spinner: NgxSpinnerService) {
+  constructor(private http: HttpClient, private spinner: NgxSpinnerService, private serviceFacade: ServiceFacade) {
     this.http.get("assets/data/column-types.json").subscribe({
       next: (response) => {
         this.categories = response;
@@ -34,6 +35,7 @@ export class AppComponent {
     this.columnDetails = [];
     this.isCreated = this.noOfColumns > 0;
     if (this.isCreated) {
+      this.subCategories = [];
       for (let i = 0; i < this.noOfColumns; i++) {
         this.columnDetails.push({
           name: "",
@@ -41,9 +43,11 @@ export class AppComponent {
           subCategory: "",
           range: {
             min: "",
-            max: ""
+            max: "",
+            hasDecimal: false
           }
         });
+        this.subCategories.push([])
       }
     }
   }
@@ -51,7 +55,13 @@ export class AppComponent {
   updateCategory(selectedCategory: string, columnIndex: number) {
     const index = this.categories.findIndex((x: any) => x.name === selectedCategory);
     if (index >= 0) {
+      this.subCategories[columnIndex] = this.categories[index].categories;
       this.columnDetails[columnIndex].subCategory = "";
+      this.columnDetails[columnIndex].range = {
+        min: "",
+        max: "",
+        hasDecimal: false
+      }
       this.selectedCategoryIndex = index;
     }
   }
@@ -71,12 +81,12 @@ export class AppComponent {
   prepareData() {
     this.data = [];
     for (let i = 0; i < this.noOfRows; i++) {
-      let data: any = {};
+      let data: any = { values: [] };
       this.columnDetails.forEach((column: any) => {
-        data.name = column.name;
-        data.value = faker.company.name();
+        data.values.push(this.serviceFacade.getData(column));
       });
       this.data.push(data);
+      this.currentRow = i + 1;
     }
   }
 
@@ -117,7 +127,7 @@ export class AppComponent {
     for (let i = 0; i < array.length; i++) {
       let line = '';
       for (let index in headerList) {
-        line += array[i]["value"].replace(/,/g, '') + ',';
+        line += array[i]["values"][index].replace(/,/g, '') + ',';
       }
       line = line.slice(0, -1);
       str += line + '\r\n';

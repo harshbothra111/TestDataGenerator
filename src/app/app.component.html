@@ -4,14 +4,14 @@
   </div>
 </nav>
 <div class="container-fluid mt-3">
-  <ngx-spinner bdColor = "rgba(0, 0, 0, 0.8)" size = "medium" color = "#fff" type = "timer" [fullScreen] = "true"><p style="color: white" > Generating... </p></ngx-spinner>
+  <ngx-spinner bdColor = "rgba(0, 0, 0, 0.8)" size = "medium" color = "#fff" type = "timer" [fullScreen] = "true"><p style="color: white" >Generating ...</p></ngx-spinner>
   <form #dataForm="ngForm" (submit)="generateData()" novalidate class="needs-validation">
     <div class="card">
       <div class="card-header">
         <div class="form-group row">
           <label for="noOfColumns" class="col-6 col-form-label text-end">Number of Columns</label>
           <div class="col-3">
-            <input type="number" min="0" [(ngModel)]="noOfColumns" name="noOfColumns" class="form-control"
+            <input type="number" min="1" [(ngModel)]="noOfColumns" name="noOfColumns" class="form-control"
               id="noOfColumns">
           </div>
           <div class="col-3">
@@ -57,20 +57,28 @@
             <select #subCategory="ngModel" class="form-select" [(ngModel)]="columnDetail.subCategory"
               name="subCategory{{i}}" required [ngClass]="submitted && subCategory.invalid ? 'is-invalid' : ''">
               <option value="">Select a type</option>
-              <option *ngFor="let category of categories[selectedCategoryIndex].categories" [value]="category.name">
+              <option *ngFor="let category of subCategories[i]" [value]="category.name">
                 {{category.name}}</option>
             </select>
           </div>
           <ng-container
-            *ngIf="columnDetail.subCategory === 'float' || columnDetail.subCategory === 'int' || columnDetail.subCategory === 'bigInt'">
+            *ngIf="columnDetail.subCategory === 'price' || columnDetail.subCategory === 'float' || columnDetail.subCategory === 'int' || columnDetail.subCategory === 'bigInt'">
             <label for="rangeMin{{i}}" class="col-auto col-form-label">Min</label>
-            <div class="col-auto">
-              <input type="text" [(ngModel)]="columnDetail.range.min" name="rangeMin{{i}}" class="form-control">
+            <div class="col-1">
+              <input type="number" [(ngModel)]="columnDetail.range.min" name="rangeMin{{i}}" class="form-control">
             </div>
             <label for="rangeMax{{i}}" class="col-auto col-form-label">Max</label>
-            <div class="col-auto">
-              <input type="text" [(ngModel)]="columnDetail.range.max" name="rangeMax{{i}}" class="form-control">
+            <div class="col-1">
+              <input type="number" [(ngModel)]="columnDetail.range.max" name="rangeMax{{i}}" class="form-control">
             </div>
+            <ng-container *ngIf="columnDetail.subCategory === 'price' || columnDetail.subCategory === 'float'">
+              <div class="col-auto form-check pt-2">
+                <input class="form-check-input" [(ngModel)]="columnDetail.range.hasDecimal" type="checkbox" [value]="false" name="hasDecimal{{i}}">
+                <label class="form-check-label" for="hasDecimal{{i}}">
+                  Has Decimal
+                </label>
+              </div>
+            </ng-container>
           </ng-container>
         </div>
       </div>
