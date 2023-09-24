@@ -21,7 +21,9 @@ export class AppComponent {
   noOfRows = 1;
   data: any = [];
   currentRow: number = 0;
-  subCategories:any = [];
+  subCategories: any = [];
+  isNumberCategory: any = [];
+  isDecimalCategory: any = [];
 
   constructor(private http: HttpClient, private spinner: NgxSpinnerService, private serviceFacade: ServiceFacade) {
     this.http.get("assets/data/column-types.json").subscribe({
@@ -47,7 +49,9 @@ export class AppComponent {
             hasDecimal: false
           }
         });
-        this.subCategories.push([])
+        this.subCategories.push([]);
+        this.isNumberCategory.push(false);
+        this.isDecimalCategory.push(false);
       }
     }
   }
@@ -63,7 +67,16 @@ export class AppComponent {
         hasDecimal: false
       }
       this.selectedCategoryIndex = index;
+      this.isNumberCategory[columnIndex] = false;
+      this.isDecimalCategory[columnIndex] = false;
     }
+  }
+
+  updateSubCategory(selectedCategory: string, columnIndex: number) {
+    const decimalCategories = ["float", "price"];
+    const numberCategories = ["int", "bigInt", "float", "price"]
+    this.isNumberCategory[columnIndex] = numberCategories.indexOf(selectedCategory) >= 0;
+    this.isDecimalCategory[columnIndex] = decimalCategories.indexOf(selectedCategory) >= 0;
   }
 
   generateData() {

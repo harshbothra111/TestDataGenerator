@@ -55,14 +55,14 @@
           </div>
           <div class="col-auto" *ngIf="columnDetail.category">
             <select #subCategory="ngModel" class="form-select" [(ngModel)]="columnDetail.subCategory"
-              name="subCategory{{i}}" required [ngClass]="submitted && subCategory.invalid ? 'is-invalid' : ''">
+            (change)="updateSubCategory(columnDetail.subCategory, i)"  
+            name="subCategory{{i}}" required [ngClass]="submitted && subCategory.invalid ? 'is-invalid' : ''">
               <option value="">Select a type</option>
               <option *ngFor="let category of subCategories[i]" [value]="category.name">
                 {{category.name}}</option>
             </select>
           </div>
-          <ng-container
-            *ngIf="columnDetail.subCategory === 'price' || columnDetail.subCategory === 'float' || columnDetail.subCategory === 'int' || columnDetail.subCategory === 'bigInt'">
+          <ng-container *ngIf="isNumberCategory[i]">
             <label for="rangeMin{{i}}" class="col-auto col-form-label">Min</label>
             <div class="col-1">
               <input type="number" [(ngModel)]="columnDetail.range.min" name="rangeMin{{i}}" class="form-control">
@@ -71,7 +71,7 @@
             <div class="col-1">
               <input type="number" [(ngModel)]="columnDetail.range.max" name="rangeMax{{i}}" class="form-control">
             </div>
-            <ng-container *ngIf="columnDetail.subCategory === 'price' || columnDetail.subCategory === 'float'">
+            <ng-container *ngIf="isDecimalCategory[i]">
               <div class="col-auto form-check pt-2">
                 <input class="form-check-input" [(ngModel)]="columnDetail.range.hasDecimal" type="checkbox" [value]="false" name="hasDecimal{{i}}">
                 <label class="form-check-label" for="hasDecimal{{i}}">
